@@ -1,6 +1,6 @@
 # n8n - Locally Extract from PDFs And write to excel (.xlsx)
 
-n8n workflow designed to automate the extraction of structured data from PDF documents using a local Large Language Model (LLM) and saving the results into a formatted Excel spreadsheet. Works fully locally - no data is upload to any online service.
+This n8n workflow automates the extraction of structured data from PDF documents using a local Large Language Model (LLM). It processes files and saves the results into a formatted Excel spreadsheet. The entire process runs fully locally - no data is uploaded to any online service.
 
 # Workflow
 
@@ -19,3 +19,4 @@ n8n workflow designed to automate the extraction of structured data from PDF doc
 * n8n 2.14.2
 * (optional) Docker Desktop 28.5.1, build e180ab8
 * llama 3.2 LLM
+* Volume Mapping: A shared/mounted folder between the host machine and the Docker container at `/home/node/docker_share`

@@ -1,0 +1,226 @@
+{
+  "name": "LocallyExtractFromPDFAndWriteToExcel",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        0
+      ],
+      "id": "f7996ea5-416f-4777-90d9-41c0f4a709e2",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Output from pdf file is: {{ $json.text }} . Extract following information from it: full name, age, known programming languages, and optional extra infos, then write each of them into a separate field. if no data could be found for a field, leave it out.\n\n",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        544,
+        0
+      ],
+      "id": "a13c60ce-35a5-406e-8c38-5bee988ba6ee",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/docker_share/*.pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        112,
+        0
+      ],
+      "id": "b829d36f-2362-48bf-ab3f-230f4cea74b6",
+      "name": "Reading all PDFs from folder"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        320,
+        0
+      ],
+      "id": "4da12914-acb4-418f-961c-84ff83875572",
+      "name": "Extract data from PDFs"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "ai/llama3.2:latest",
+          "mode": "list",
+          "cachedResultName": "ai/llama3.2:latest"
+        },
+        "responsesApiEnabled": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        544,
+        192
+      ],
+      "id": "39bf6353-62f4-44e5-854c-837f4bd3aa8d",
+      "name": "Local AI Model (LLama 3.2)",
+      "retryOnFail": true,
+      "maxTries": 5,
+      "waitBetweenTries": 1,
+      "credentials": {
+        "openAiApi": {
+          "id": "4ayUK0GfY472yrvO",
+          "name": "Docker Local AI Model Runner"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        896,
+        0
+      ],
+      "id": "4917c512-c09b-4d1c-b936-fb88d3d67486",
+      "name": "Convert JSON to Excel-XLSX"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/home/node/docker_share/results.xlsx",
+        "options": {
+          "append": false
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        1104,
+        0
+      ],
+      "id": "fdbe2d0a-5220-4f2d-955c-8935a9731f6a",
+      "name": "Write Excel File to Disk"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"name\": \"Max\",\n\t\"age\": \"12\",\n  \"programming_languages\": \"c#,js\",\n  \"other_info\": \"likes tennis\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        688,
+        192
+      ],
+      "id": "80c92466-6494-4f06-8370-02d2f70381d4",
+      "name": "Structured Output Parser (to JSON)"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Reading all PDFs from folder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Convert JSON to Excel-XLSX",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reading all PDFs from folder": {
+      "main": [
+        [
+          {
+            "node": "Extract data from PDFs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract data from PDFs": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Local AI Model (LLama 3.2)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert JSON to Excel-XLSX": {
+      "main": [
+        [
+          {
+            "node": "Write Excel File to Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser (to JSON)": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "574f10e6-f081-4ec5-9f5a-d27bad0b52bc",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "393e9878f2160942707ea457b238f43fe1fdc2d00369be7b40067cfe58083014"
+  },
+  "id": "1g0RFpzoDjfedTyq",
+  "tags": []
+}

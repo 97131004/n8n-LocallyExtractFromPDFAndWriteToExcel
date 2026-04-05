@@ -16,7 +16,6 @@ This n8n workflow automates the extraction of structured data from PDF documents
 
 # Requirements
 
-* n8n 2.14.2
-* (optional) Docker Desktop 28.5.1, build e180ab8
-* llama 3.2 LLM
+* Self-hosted n8n 2.14.2 (with Docker Desktop 28.5.1, build e180ab8) 
+* llama 3.2 LLM (installed via docker)
 * Shared/mounted folder between the host machine and the Docker container at `/home/node/docker_share`

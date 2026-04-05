@@ -19,4 +19,4 @@ This n8n workflow automates the extraction of structured data from PDF documents
 * n8n 2.14.2
 * (optional) Docker Desktop 28.5.1, build e180ab8
 * llama 3.2 LLM
-* Volume Mapping: A shared/mounted folder between the host machine and the Docker container at `/home/node/docker_share`
+* Shared/mounted folder between the host machine and the Docker container at `/home/node/docker_share`

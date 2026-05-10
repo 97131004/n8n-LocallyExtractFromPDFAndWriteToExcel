@@ -1,4 +1,4 @@
-# n8n - Locally extract data from PDFs and write to Excel
+# n8n: Locally extract data from PDFs and write to Excel
 
 This n8n workflow (proof of concept) automates the extraction of structured data from PDF documents using a local Large Language Model (LLM) and an AI agent. It processes files and saves the results into a formatted Excel spreadsheet. The entire process runs fully locally - no data is ever processed by any online service.
 
